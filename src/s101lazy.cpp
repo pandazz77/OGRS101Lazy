@@ -1,6 +1,9 @@
 #include "ogrsf_frmts.h"
 #include "cpl_conv.h"
 #include "S101GML.h"
+#include <mutex>
+
+std::mutex mtx;
 
 class OGRS101LazyDriver: public GDALDriver{
     public:
@@ -23,9 +26,11 @@ class OGRS101LazyDriver: public GDALDriver{
                 return nullptr; // READ ONLY
             }
             
+            mtx.lock();
             libS101::S101 cell;
             cell.Open(poOpenInfo->pszFilename);
             std::string gmlData = S101GML::ExportToGML(cell);
+            mtx.unlock();
 
             const char *tempGMLPath = "/vsimem/temp.gml";
             VSILFILE* fp = VSIFOpenL(tempGMLPath,"w");
@@ -61,7 +66,7 @@ class OGRS101LazyDriver: public GDALDriver{
 };
 
 // Export the function properly
-extern "C" void GDALRegisterMe()
+extern "C" void RegisterOGRS101Lazy()
 {
     OGRS101LazyDriver::Register();
 }
