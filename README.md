@@ -38,7 +38,7 @@ cmake --build . -j 8 --config Release --target S101Lazy
 sudo cmake --install ./build --component S101Lazy # will install ogr driver to /usr/lib/gdalplugins
 
 # or install release version via wget:
-# --TODO--
+sudo wget -P /usr/lib/gdalplugins/ https://github.com/pandazz77/OGRS101Lazy/releases/download/v1.0/ogr_S101Lazy.so
 ```
 
 ## Usage
